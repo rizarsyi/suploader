@@ -34,11 +34,6 @@
 								reader = new FileReader();
 								reader.onloadend = function (e) {
 
-                                    // append files images to formdata
-                                    if (option_upload.formdata) {
-								        option_upload.formdata.append("images[]", file);
-							        }
-                                    
                                     if (option_upload.autoUpload){
                                         // if autoUpload is TRUE submit formdata.
                                         // preview download.
@@ -56,24 +51,36 @@
 								};
 								reader.readAsDataURL(file);
 							}
+
+                            // append files images to formdata
+                            if (option_upload.formdata) {
+								option_upload.formdata.append("images[]", file);
+                            }
 						}
-					}
+					}                    
 				}, false);
 			},
 
-			preview: function(source) {
-		  		var list = document.getElementById("image-list"),
+			preview: function(source, file) {
+                //console.log(file);
+                var list = document.getElementById("image-list"),
 			  		li   = document.createElement("li"),
 			  		img  = document.createElement("img"),
                     a = document.createElement('a');
 
                 a.innerHTML = 'cancel';
                 a.href = '#';
+                a.id = 'cancel';
 			  	img.className = "upload-preview";
 
                 img.src = source;
 		  		li.appendChild(img);
+                li.appendChild(a);
 				list.appendChild(li);
+                
+                $('#cancel').click(function(){
+                    methods._cancelHandler();
+				});
 
 			},
 
@@ -90,14 +97,14 @@
 			},
 
 			_cancelHandler: function (e) {
-	            $('#image-list li').remove();
+                $('#image-list li').remove();
 	            document.getElementById("response").innerHTML = "";
 	            $('#cancel').addClass('hidden');
 	        },
 
 	        _uploadHandler: function(option_upload) {
 	        	if (option_upload.formdata){
-					$.ajax({
+                    $.ajax({
 					    url: "upload.php",
 					    type: "POST",
 					    data: option_upload.formdata,
