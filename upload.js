@@ -6,21 +6,26 @@
             multiple : true,
             autoUpload : true
 		},
-		options = $.extend(defaults, options),
+		option_upload = $.extend(defaults, options),
 		$input = document.getElementById("images"), 
 		methods = {
 			upload: function() {
                 // set Attribute single / multiple upload to
                 // input files
-                var btn = document.getElementById("images")
-                if (options.multiple){
+                var btn = document.getElementById("images");
+
+                if (option_upload.multiple){
                     btn.setAttribute("multiple", "multiple");
                 }
 
-                options.formdata = new FormData();
+                if (option_upload.autoUpload){
+                    $('#btn').hide();
+                }
+
+                option_upload.formdata = new FormData();
                 $input.addEventListener("change", function (evt) {
 			 		var i = 0, len = this.files.length, img, reader, file;
-				
+
 					for ( ; i < len; i++ ) {
 						file = this.files[i];
 
@@ -29,16 +34,15 @@
 								reader = new FileReader();
 								reader.onloadend = function (e) {
 
-                                    // append files images to formdata                                  
-                                    if (options.formdata) {
-								        options.formdata.append("images[]", file);
+                                    // append files images to formdata
+                                    if (option_upload.formdata) {
+								        option_upload.formdata.append("images[]", file);
 							        }
                                     
-                                    console.log(options.formdata);
-                                    if (options.autoUpload){
+                                    if (option_upload.autoUpload){
                                         // if autoUpload is TRUE submit formdata.
                                         // preview download.
-                                        methods._uploadHandler(options);
+                                        methods._uploadHandler(option_upload);
                                         methods.preview_download(e.target.result, file.fileName);
 
                                     }else{
@@ -52,7 +56,7 @@
 								};
 								reader.readAsDataURL(file);
 							}
-						}	
+						}
 					}
 				}, false);
 			},
@@ -60,17 +64,30 @@
 			preview: function(source) {
 		  		var list = document.getElementById("image-list"),
 			  		li   = document.createElement("li"),
-			  		img  = document.createElement("img");
-			  		img.className = "upload-preview";
-			  		
-		  		img.src = source;
+			  		img  = document.createElement("img"),
+                    a = document.createElement('a');
+
+                a.innerHTML = 'cancel';
+                a.href = '#';
+			  	img.className = "upload-preview";
+
+                img.src = source;
 		  		li.appendChild(img);
 				list.appendChild(li);
 
 			},
 
             preview_download: function(source) {
-		  		console.log();
+                var list = document.getElementById("image-list"),
+			  		li   = document.createElement("li"),
+			  		img  = document.createElement("img");
+
+			    img.className = "upload-preview";
+
+		  		img.src = source;
+		  		li.appendChild(img);
+                li.appendChild(a);
+				list.appendChild(li);
 			},
 
 			_cancelHandler: function (e) {
@@ -79,22 +96,21 @@
 	            $('#cancel').addClass('hidden');
 	        },
 
-	        _uploadHandler: function(options) {
-	        	if (options.formdata){
+	        _uploadHandler: function(option_upload) {
+	        	if (option_upload.formdata){
 					$.ajax({
 					    url: "upload.php",
 					    type: "POST",
-					    data: options.formdata,
+					    data: option_upload.formdata,
 						processData: false,
 					    contentType: false,
 					    success: function (res) {
-						    document.getElementById("response").innerHTML = res; 
+						    document.getElementById("response").innerHTML = res;
 						}
 					});
 				}
 	        }
-
-		}
+		};
 		return methods.upload();
-	}
+	};
 })(jQuery);
