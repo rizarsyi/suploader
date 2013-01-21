@@ -86,7 +86,6 @@
 
 		  		img.src = source;
 		  		li.appendChild(img);
-                li.appendChild(a);
 				list.appendChild(li);
 			},
 
