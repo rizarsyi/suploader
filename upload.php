@@ -1,11 +1,17 @@
 <?php
+if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) == 'post' && !empty( $_FILES ) )
+{
+    foreach( $_FILES[ 'images' ][ 'tmp_name' ] as $index => $tmpName )
+    {
+        if( !empty( $_FILES[ 'images' ][ 'error' ][ $index ] ) )
+        {
+            return false;
+        }
 
-foreach ($_FILES["images"]["error"] as $key => $error) {
-    if ($error == UPLOAD_ERR_OK) {
-        $name = $_FILES["images"]["name"][$key];
-        move_uploaded_file( $_FILES["images"]["tmp_name"][$key], "uploads/" . $_FILES['images']['name'][$key]);
+        $someDestinationPath = "uploads/".$_FILES[ 'images' ][ 'name' ][ $index ];
+        if( !empty( $tmpName ) && is_uploaded_file( $tmpName ) )
+        {
+            move_uploaded_file( $tmpName, $someDestinationPath ); // move to new location perhaps?
+        }
     }
 }
-
-
-echo "<h2>Successfully Uploaded Images</h2>";
