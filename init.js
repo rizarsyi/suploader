@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$('#images').Uploader({
-		url : '/suploader/server/php/',
+		url : 'server/php/',
 		autoUpload : true
 	});
 });
