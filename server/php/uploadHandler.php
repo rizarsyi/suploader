@@ -95,8 +95,14 @@
 
 			if($this->validate($tmpFile, $file, $error, $index)){
 				$upload_dir = $this->get_upload_path();
+				// die(var_dump(!is_dir($upload_dir)));
 				if(!is_dir($upload_dir)) {
-					mkdir($upload_dir, 0755);
+					
+					if (!mkdir($upload_dir, 0777, true)) {
+				        die('Failed to create folders...');
+				    }
+					//mkdir($upload_dir);
+					
 				}
 
 				$file_path = $this->get_upload_path($file->name);
